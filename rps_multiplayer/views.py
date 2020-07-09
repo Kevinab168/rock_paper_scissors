@@ -29,7 +29,12 @@ def games(request):
         if request.user.is_authenticated:
             user1 = request.user
             user2_name = request.POST['users']
-            user2 = User.objects.all().get(username=user2_name)
+            try:
+                user2 = User.objects.all().get(username=user2_name)
+            except User.DoesNotExist:
+                error_message = f'{user2_name} does not exist'
+                context = {'error': error_message}
+                return render(request, 'user_does_not_exist_error.html',context)
             new_game = Game.objects.create()
             new_game.users.add(user1, user2)
             return redirect(f'/games/{new_game.pk}')

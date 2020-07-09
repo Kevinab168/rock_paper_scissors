@@ -1,13 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
     <div>
-        {% block error%}
-        {% endblock error %}
+        <p data-test="error-message">{% block error %}{% endblock error %}</p> 
     </div>
     <div>
         {% block link %}
         {% endblock link %}
     </div>
-
-    
 {% endblock content %}
