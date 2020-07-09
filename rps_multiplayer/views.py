@@ -28,11 +28,15 @@ def games(request):
     if request.method == 'POST':
         if request.user.is_authenticated:
             user1 = request.user
-        user2_name = request.POST['users']
-        user2 = User.objects.all().get(username=user2_name)
-        new_game = Game.objects.create()
-        new_game.users.add(user1, user2)
-        return redirect(f'/games/{new_game.pk}')
+            user2_name = request.POST['users']
+            user2 = User.objects.all().get(username=user2_name)
+            new_game = Game.objects.create()
+            new_game.users.add(user1, user2)
+            return redirect(f'/games/{new_game.pk}')
+        else:
+            error_message = 'Sorry, you must be signed in to do that'
+            context = {'error': error_message}
+            return render(request, 'non_user_error.html', context)
 
 
 def game(request, game_id):

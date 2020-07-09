@@ -8,6 +8,17 @@ def test_landing_page(driver, live_server):
     assert driver.find_element_by_css_selector('[data-test="create-game"]')
 
 
+def test_create_game_non_user(driver, live_server, create_game, user):
+    test_user = user('User', 'asd;alfkajsdf')
+    driver.get(live_server.url)
+    create_game(test_user)
+    error_message = driver.find_element_by_css_selector('[data-test="error-message"]').text.lower()
+    assert 'sorry, you must be signed in to do that' in error_message
+    log_in_link = driver.find_element_by_css_selector('[data-test="log_in"]')
+    log_in_link.click()
+    assert driver.current_url == (live_server.url + '/login/')
+
+
 def test_login(driver, live_server, log_in, user):
     new_user = user('User', 'a;lsdfkjasdf')
     log_in(my_username=new_user.username, my_password='a;lsdfkjasdf')
@@ -63,3 +74,5 @@ def test_complete_game(driver, live_server, user, log_in, log_out, create_game, 
     assert 'Complete' in progress_message.text
     winner = driver.find_element_by_css_selector('[data-test="winner"]')
     assert user_2.username in winner.text
+
+

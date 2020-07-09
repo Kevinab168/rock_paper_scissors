@@ -1,0 +1,7 @@
+{% extends "base_error.html" %}
+{% block error %}
+    <p data-test="error-message">{{ error }}</p>
+{% endblock error %}
+{% block link %}
+    <a href="{% url 'log_in' %}" data-test="log_in">Log In</a>
+{% endblock link %}
