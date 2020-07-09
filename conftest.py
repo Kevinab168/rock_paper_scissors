@@ -2,6 +2,7 @@ import os
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.select import Select
 from play_game.models import User
 
 
@@ -37,4 +38,32 @@ def log_in(driver, live_server):
         password.send_keys(my_password)
         log_in = driver.find_element_by_css_selector('[data-test="log-in"]')
         log_in.click()
+    return action
+
+
+@pytest.fixture
+def create_game(driver, live_server):
+    def action(user):
+        users_field = driver.find_element_by_css_selector('[data-test="users"]')
+        users_field.send_keys(user.username)
+        create_game = driver.find_element_by_css_selector('[data-test="create-game"]')
+        create_game.click()
+    return action
+
+
+@pytest.fixture
+def select_send_option(driver, live_server):
+    def action(value):
+        select_item = Select(driver.find_element_by_css_selector('[data-test="choice"]'))
+        select_item.select_by_value(value)
+        send_move = driver.find_element_by_css_selector('[data-test="send-move"]')
+        send_move.click()
+    return action
+
+
+@pytest.fixture
+def log_out(driver, live_server):
+    def action():
+        log_out = driver.find_element_by_css_selector('[data-test="log-out"]')
+        log_out.click()
     return action

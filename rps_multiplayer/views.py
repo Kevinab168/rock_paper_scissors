@@ -1,6 +1,6 @@
 from play_game.models import User, Game
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 
 def homepage(request):
@@ -18,6 +18,12 @@ def log_in(request):
     return render(request, 'log_in.html')
 
 
+def log_out(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return redirect('log_in')
+
+
 def games(request):
     if request.method == 'POST':
         if request.user.is_authenticated:
@@ -33,15 +39,27 @@ def game(request, game_id):
     if request.user.is_authenticated:
         current_user = request.user
     game = Game.objects.all().get(pk=game_id)
-    user1 = game.users.all()[0]
-    user2 = game.users.all()[1]
+    user1 = game.users.all().first()
+    user2 = game.users.all().last()
     if current_user == user1:
         opponent = user2
     else:
         opponent = user1
+    if request.method == 'POST':
+        move = request.POST['move']
+        if current_user == user1:
+            game.user_1_move = move
+        else:
+            game.user_2_move = move
+        game.save()
+    message = game.game_progress
+    if message == 'Complete':
+        game.set_winner()
+        game.save()
     context = {
         'current_user': current_user,
         'opponent': opponent,
-        'game': game
+        'game': game,
+        'message': message
     }
     return render(request, 'game.html', context)

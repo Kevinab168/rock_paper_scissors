@@ -1,13 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-    <p data-test="opponents">{{ opponent }}</p>
+    {% if game.winning_user %}
+        <h2 data-test="winner">Winner: {{ game.winning_user }}</h2>
+    {% endif %}
+    <h5 data-test="progress-message">Game Progress: {{ message }}</h5>
+    <p data-test="opponents">Opponent: {{ opponent }}</p>
 
-    <form action="">
+    <form action="{% url 'game' game.pk %}" method="POST">
+        {% csrf_token %}
         <select name="move" id="move" data-test="choice">
-            <option value="scissors">rock</option>
-            <option value="scissors">paper</option>
+            <option value="rock">rock</option>
+            <option value="paper">paper</option>
             <option value="scissors">scissors</option>
         </select>
+        
         <input type="submit" value="Send Move" data-test="send-move">
     </form>
 {% endblock content %}
