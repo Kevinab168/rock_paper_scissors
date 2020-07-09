@@ -63,10 +63,3 @@ def test_complete_game(driver, live_server, user, log_in, log_out, create_game, 
     assert 'Complete' in progress_message.text
     winner = driver.find_element_by_css_selector('[data-test="winner"]')
     assert user_2.username in winner.text
-
-def test_my_games(driver, live_server, user, log_in, log_out, create_game):
-    user_1 = user('User1', 'a;lsdkfkjasdf')
-    user_2 = user('User2', 'adsl;dkfja;sdf')
-    log_in(my_username=user_1.username, my_password='a;lsdkfkjasdf')
-    create_game(user_2)
-    driver.get(live_server.url)
