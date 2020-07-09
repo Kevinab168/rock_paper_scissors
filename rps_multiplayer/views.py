@@ -34,7 +34,7 @@ def games(request):
             except User.DoesNotExist:
                 error_message = f'{user2_name} does not exist'
                 context = {'error': error_message}
-                return render(request, 'user_does_not_exist_error.html',context)
+                return render(request, 'user_does_not_exist_error.html', context)
             new_game = Game.objects.create()
             new_game.users.add(user1, user2)
             return redirect(f'/games/{new_game.pk}')
