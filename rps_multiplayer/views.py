@@ -42,28 +42,32 @@ def games(request):
 def game(request, game_id):
     if request.user.is_authenticated:
         current_user = request.user
-    game = Game.objects.all().get(pk=game_id)
-    user1 = game.users.all().first()
-    user2 = game.users.all().last()
-    if current_user == user1:
-        opponent = user2
-    else:
-        opponent = user1
-    if request.method == 'POST':
-        move = request.POST['move']
+        game = Game.objects.all().get(pk=game_id)
+        user1 = game.users.all().first()
+        user2 = game.users.all().last()
         if current_user == user1:
-            game.user_1_move = move
+            opponent = user2
         else:
-            game.user_2_move = move
-        game.save()
-    message = game.game_progress
-    if message == 'Complete':
-        game.set_winner()
-        game.save()
-    context = {
-        'current_user': current_user,
-        'opponent': opponent,
-        'game': game,
-        'message': message
-    }
-    return render(request, 'game.html', context)
+            opponent = user1
+        if request.method == 'POST':
+            move = request.POST['move']
+            if current_user == user1:
+                game.user_1_move = move
+            else:
+                game.user_2_move = move
+            game.save()
+        message = game.game_progress
+        if message == 'Complete':
+            game.set_winner()
+            game.save()
+        context = {
+            'current_user': current_user,
+            'opponent': opponent,
+            'game': game,
+            'message': message
+        }
+        return render(request, 'game.html', context)
+    else:
+        error_message = 'Sorry, you must be signed in to do that'
+        context = {'error': error_message}
+        return render(request, 'non_user_error.html', context)
